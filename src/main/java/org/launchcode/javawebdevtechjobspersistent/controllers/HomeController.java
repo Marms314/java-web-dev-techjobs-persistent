@@ -52,21 +52,23 @@ public class HomeController {
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId, @RequestParam List<Integer> skills) {
+                                    Errors errors, Model model, @RequestParam Optional<Integer> employerId, @RequestParam Optional<List<Integer>> skills) {
 
-        if (errors.hasErrors()) {
+
+        if (errors.hasErrors() || employerId.isEmpty() || skills.isEmpty()) {
             model.addAttribute("title", "Add Job");
             model.addAttribute("employers", employerRepository.findAll());
             model.addAttribute("skills", skillRepository.findAll());
+            model.addAttribute("error", true);
             model.addAttribute(new Job());
             return "add";
         }
 
-        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-        Optional<Employer> employerObj = employerRepository.findById(employerId);
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills.get());
+        Employer employerObj = employerRepository.findById(employerId.get()).get();
 
         newJob.setSkills(skillObjs);
-        newJob.setEmployer(employerObj.get());
+        newJob.setEmployer(employerObj);
 
         jobRepository.save(newJob);
         return "redirect:";

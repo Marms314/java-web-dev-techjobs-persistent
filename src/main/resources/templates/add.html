@@ -8,6 +8,7 @@
 <h1>Add Job</h1>
 
 <form method="post" style="max-width:600px;">
+    <p th:if="${error}" class="error">All fields are required. Please correct and resubmit.</p>
     <div class="form-group">
         <label th:for="name">Name</label>
         <input class="form-control" th:field="${job.name}" />
@@ -21,7 +22,7 @@
                     th:text="${employer.name} + ' - ' + ${employer.location}"
                     th:value="${employer.id}"></option>
         </select>
-        <span th:errors="${job.employer}" class="error"></span>
+        <span th:errors="${job.employer}" class="error">Required field.</span>
         <a th:href="@{'/employers/add'}">Add Employers</a>
     </div>
 
@@ -31,7 +32,7 @@
             <input type="checkbox" name="skills" th:value="${skill.id}">
             <span th:title="${skill.description}"><label th:text="${skill.name}"></label></span>
         </th:block>
-        <span th:errors="${job.skills}" class="error"></span>
+        <span th:errors="${job.skills}" class="error">Required field.</span>
         <a th:href="@{'/skills/add'}">Add Skills</a>
     </div>
 
